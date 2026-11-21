@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zoltraak Security — VAPT Services</title>
+  <meta name="description" content="Zoltraak Security provides Vulnerability Assessment and Penetration Testing (VAPT) for web, mobile, API, network, cloud and wireless.">
+  <script>
+    (function () {
+      var t;
+      try { t = localStorage.getItem('zs-theme'); } catch (e) {}
+      if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 2 36 8v11c0 9.5-6.6 16.6-16 19C10.6 35.6 4 28.5 4 19V8L20 2Z' fill='%230a0c10' stroke='%23c9a45c' stroke-width='2'/%3E%3Cpath d='M13 13h14L14 27h14' fill='none' stroke='%23c9a45c' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2026110701">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#/home" class="brand" aria-label="Zoltraak Security home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M20 2 36 8v11c0 9.5-6.6 16.6-16 19C10.6 35.6 4 28.5 4 19V8L20 2Z" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M13 13h14L14 27h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">Zoltraak <em>Security</em></span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Main">
+        <a href="#/home" data-link="home">Home</a>
+        <a href="#/services" data-link="services">Services</a>
+        <a href="#/about" data-link="about">About Us</a>
+        <a href="#/blogs" data-link="blogs">Blogs</a>
+        <a href="#/verify" data-link="verify">Report Verifier</a>
+        <a href="#/contact" data-link="contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark and light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1.5 12h3M19.5 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></svg>
+        </button>
+        <a href="#/contact" class="btn btn-gold btn-sm hide-mobile">Book an Assessment</a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HOME -->
+    <section class="page" data-page="home">
+      <div class="hero">
+        <canvas id="heroBg" aria-hidden="true"></canvas>
+        <div class="container hero-inner">
+          <p class="eyebrow">Vulnerability Assessment &amp; Penetration Testing</p>
+          <h1 class="display-sm">Elite Offensive Security.<br>Proven Expertise.<br><span class="gold-text">Recognized Excellence.</span></h1>
+          <p class="lead">Our team brings together highly certified security professionals, accomplished bug bounty hunters, and award-winning competitors to deliver advanced security assessments and real-world adversarial testing.</p>
+          <p class="hero-tagline">"Not Just Certified. Battle-Tested."</p>
+          <div class="hero-cta">
+            <a href="#/contact" class="btn btn-gold">Request a Proposal</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="container section">
+        <div class="section-head">
+          <p class="eyebrow">What we test</p>
+          <h2 class="title-sm">Coverage across your entire attack surface</h2>
+        </div>
+        <div class="mission-list" id="homeServices"></div>
+        <p class="eyebrow mt-lg">Beyond VAPT</p>
+        <div id="homeAdvanced"></div>
+        <div class="center mt-lg"><a href="#/services" class="link-arrow">View all services</a></div>
+      </div>
+
+      <div class="cert-strip">
+        <div class="container">
+          <p class="eyebrow center">Our consultants are certified in</p>
+          <div class="cert-row" id="homeCerts"></div>
+          <div class="center"><a href="#/about" class="link-arrow">Meet the credentials</a></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <div class="container section">
+          <div class="section-head">
+            <p class="eyebrow">Our process</p>
+            <h2 class="title-sm">A disciplined engagement, end to end</h2>
+          </div>
+          <ol class="steps">
+            <li><span class="step-no">01</span><h3>Scoping</h3><p>We agree on targets, rules of engagement, test windows and success criteria.</p></li>
+            <li><span class="step-no">02</span><h3>Reconnaissance</h3><p>We map your attack surface the way a real adversary would.</p></li>
+            <li><span class="step-no">03</span><h3>Exploitation</h3><p>Manual testing, supported by tooling, to confirm real and exploitable risk.</p></li>
+            <li><span class="step-no">04</span><h3>Reporting</h3><p>An executive summary, technical findings, CVSS ratings and fix guidance.</p></li>
+            <li><span class="step-no">05</span><h3>Retest</h3><p>We validate your fixes and issue a verifiable final report.</p></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="container section">
+        <div class="split">
+          <div>
+            <p class="eyebrow">Why Zoltraak</p>
+            <h2 class="title-sm">Precision over noise</h2>
+            <p class="muted">Automated scanners produce long lists. We produce answers. Every finding is manually validated, reproducible and ranked by business impact, so your team fixes what matters first.</p>
+            <ul class="checklist">
+              <li>Consultants holding OSCP, OSEP, GPEN, CPTS, CRTO and more</li>
+              <li>No false positives in the final report</li>
+              <li>Reports you can verify online with a unique report ID</li>
+              <li>Strict confidentiality, with an NDA on every engagement</li>
+            </ul>
+          </div>
+          <div class="feature-card">
+            <p class="eyebrow">Report authenticity</p>
+            <h3 class="title-sm">Every report is verifiable</h3>
+            <p class="muted">Clients, partners and auditors can confirm that a Zoltraak report is genuine and current using our Report Verifier.</p>
+            <a href="#/verify" class="btn btn-ghost mt">Verify a Report</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="container section">
+        <div class="cta-panel">
+          <h2 class="title-sm">Ready to test your defenses?</h2>
+          <p class="muted">Tell us about your environment. We'll reply within one business day with a scoped proposal.</p>
+          <a href="#/contact" class="btn btn-gold">Book an Assessment</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="page" data-page="services" hidden>
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow">Services</p>
+          <h1 class="display-sm">Vulnerability Assessment &amp; Penetration Testing</h1>
+          <p class="lead">Each engagement can be tailored to your scope, compliance needs and release schedule.</p>
+        </div>
+      </div>
+      <div class="container section">
+        <div class="service-list" id="serviceList"></div>
+      </div>
+      <div class="container section pt-0">
+        <div class="section-head">
+          <p class="eyebrow">Beyond VAPT</p>
+          <h2 class="title-sm">Adversary simulation</h2>
+          <p class="muted">VAPT finds as many weaknesses as possible within a defined scope. Red teaming goes further, testing whether your team can detect and stop a real, objective-driven attacker.</p>
+        </div>
+        <div class="service-list" id="advancedList"></div>
+      </div>
+      <div class="band">
+        <div class="container section">
+          <div class="section-head">
+            <p class="eyebrow">Testing approaches</p>
+            <h2 class="title-sm">Choose your level of insight</h2>
+          </div>
+          <div class="grid grid-3">
+            <div class="card"><h3>Black Box</h3><p class="muted">No prior knowledge. This simulates an external attacker targeting your exposed assets.</p></div>
+            <div class="card"><h3>Grey Box</h3><p class="muted">Limited knowledge and credentials. This is the most efficient balance of depth and realism.</p></div>
+            <div class="card"><h3>White Box</h3><p class="muted">Full access to documentation and source code. This gives maximum coverage and depth.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="container section">
+        <div class="section-head">
+          <p class="eyebrow">Compliance</p>
+          <h2 class="title-sm">Supporting your frameworks</h2>
+        </div>
+        <ul class="pill-row">
+          <li>ISO/IEC 27001</li><li>PCI DSS</li><li>SOC 2</li><li>HIPAA</li><li>GDPR</li><li>RA 10173 IRR</li><li>OWASP ASVS</li><li>OWASP MASVS</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="page" data-page="about" hidden>
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow">About us</p>
+          <h1 class="display-sm">Offensive expertise, built on trust</h1>
+          <p class="lead">Zoltraak Security is a specialist VAPT firm. We help organizations find and fix security weaknesses before attackers find them.</p>
+        </div>
+      </div>
+      <div class="container section">
+        <div class="split">
+          <div>
+            <h2 class="title-sm">Our mission</h2>
+            <p class="muted">To make high-quality offensive security accessible to every organization, so you get the depth of a dedicated red team with the clarity of a trusted advisor.</p>
+            <h2 class="title-sm mt-lg">Our approach</h2>
+            <p class="muted">We think like adversaries and communicate like partners. Each engagement is led by senior consultants who stay with you from scoping through retest.</p>
+          </div>
+          <div class="grid grid-2">
+            <div class="value-card"><h3>Integrity</h3><p class="muted">We work under strict rules of engagement and confidentiality.</p></div>
+            <div class="value-card"><h3>Precision</h3><p class="muted">Every finding is validated and reproducible.</p></div>
+            <div class="value-card"><h3>Clarity</h3><p class="muted">Our reports are written for executives and engineers alike.</p></div>
+            <div class="value-card"><h3>Partnership</h3><p class="muted">We stay involved until your fixes are confirmed.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="band">
+        <div class="container section">
+          <div class="section-head">
+            <p class="eyebrow">Credentials</p>
+            <h2 class="title-sm">Certified consultants</h2>
+            <p class="muted">Our team holds hands-on, practical offensive security certifications from leading organizations.</p>
+          </div>
+          <div class="cert-grid" id="certGrid"></div>
+          <div class="section-head coin-head">
+            <p class="eyebrow">Recognition</p>
+            <h3 class="title-sm">Challenge Coins</h3>
+            <p class="muted">Physical coins awarded by elite programs for demonstrated skill — earned through hacking competitions and challenges.</p>
+          </div>
+          <div class="coin-showcase" id="coinGrid"></div>
+
+          <div class="section-head coin-head">
+            <p class="eyebrow">Recognition</p>
+            <h3 class="title-sm">Hall of Fame</h3>
+            <p class="muted">Our researchers have been publicly acknowledged by leading organizations for responsibly disclosing security vulnerabilities.</p>
+          </div>
+          <div class="hof-grid">
+            <div class="hof-card">
+              <p class="eyebrow">Vulnerability Disclosure Programs (VDPs)</p>
+              <ul class="hof-list">
+                <li>Dutch Government</li>
+                <li>Ferrari</li>
+                <li>Bosch</li>
+                <li>Aboitiz Power</li>
+              </ul>
+            </div>
+            <div class="hof-card">
+              <p class="eyebrow">Bug Bounty Programs</p>
+              <ul class="hof-list">
+                <li>Figma</li>
+                <li>LaunchDarkly</li>
+                <li>Apple</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOGS -->
+    <section class="page" data-page="blogs" hidden>
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow">Blogs</p>
+          <h1 class="display-sm">Insights from the field</h1>
+          <p class="lead">Research, guides and lessons from our penetration testing work.</p>
+        </div>
+      </div>
+      <div class="container section">
+        <div class="grid grid-3" id="blogList"></div>
+      </div>
+    </section>
+
+    <section class="page" data-page="article" hidden>
+      <div class="container section article" id="article"></div>
+    </section>
+
+    <!-- REPORT VERIFIER -->
+    <section class="page" data-page="verify" hidden>
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow">Report Verifier</p>
+          <h1 class="display-sm">Verify a Zoltraak report</h1>
+          <p class="lead">Confirm that a security assessment report was issued by Zoltraak Security and is still valid.</p>
+        </div>
+      </div>
+      <div class="container section">
+        <div class="verify-wrap">
+          <form class="form card" id="verifyForm" novalidate>
+            <div class="field">
+              <label for="reportId">Report ID</label>
+              <input id="reportId" name="reportId" type="text" placeholder="ZS-2026-0001" autocomplete="off" required>
+            </div>
+            <div class="field">
+              <label for="verifyCode">Verification Code</label>
+              <input id="verifyCode" name="verifyCode" type="text" placeholder="XXXX-XXXX" autocomplete="off" required>
+              <small class="muted">You'll find both values on the cover page of the report.</small>
+            </div>
+            <p class="form-error" id="verifyError" role="alert"></p>
+            <button class="btn btn-gold btn-block" type="submit">Verify Report</button>
+          </form>
+          <div class="verify-result" id="verifyResult" aria-live="polite">
+            <div class="result-empty">
+              <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 36 8v11c0 9.5-6.6 16.6-16 19C10.6 35.6 4 28.5 4 19V8L20 2Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m13 20 5 5 9-10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <p class="muted">Enter a report ID and verification code to see the result here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="page" data-page="contact" hidden>
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow">Contact</p>
+          <h1 class="display-sm">Let's secure what matters</h1>
+          <p class="lead">Tell us about your environment and goals. We'll reply within one business day.</p>
+        </div>
+      </div>
+      <div class="container section">
+        <div class="contact-wrap">
+          <form class="form card" id="contactForm" novalidate>
+            <div class="row-2">
+              <div class="field"><label for="cName">Full Name</label><input id="cName" name="name" type="text" required autocomplete="name"></div>
+              <div class="field"><label for="cEmail">Work Email</label><input id="cEmail" name="email" type="email" required autocomplete="email"></div>
+            </div>
+            <div class="row-2">
+              <div class="field"><label for="cCompany">Company</label><input id="cCompany" name="company" type="text" autocomplete="organization"></div>
+              <div class="field">
+                <label for="cService">Service of Interest</label>
+                <select id="cService" name="service"></select>
+              </div>
+            </div>
+            <div class="field"><label for="cMsg">Message</label><textarea id="cMsg" name="message" rows="5" required placeholder="Scope, timelines, compliance requirements..."></textarea></div>
+            <p class="form-error" id="contactError" role="alert"></p>
+            <button class="btn btn-gold" type="submit">Send Message</button>
+            <p class="form-success" id="contactSuccess" role="status" hidden>Thank you. Your message has been received, and our team will contact you shortly.</p>
+          </form>
+          <aside class="contact-info">
+            <div class="info-item"><p class="eyebrow">Email</p><p id="infoEmail"></p></div>
+            <div class="info-item"><p class="eyebrow">Phone</p><p id="infoPhone"></p></div>
+            <div class="info-item"><p class="eyebrow">Office</p><p id="infoAddress"></p></div>
+            <div class="info-item"><p class="eyebrow">Hours</p><p>Monday to Friday, 8:00 AM to 5:00 PM</p></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a href="#/home" class="brand">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 36 8v11c0 9.5-6.6 16.6-16 19C10.6 35.6 4 28.5 4 19V8L20 2Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13h14L14 27h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="brand-text">Zoltraak <em>Security</em></span>
+        </a>
+        <p class="muted mt">Expert-led Vulnerability Assessment and Penetration Testing.</p>
+      </div>
+      <div>
+        <p class="eyebrow">Company</p>
+        <a href="#/about">About Us</a><a href="#/blogs">Blogs</a><a href="#/contact">Contact</a>
+      </div>
+      <div>
+        <p class="eyebrow">Services</p>
+        <a href="#/services">Web Application</a><a href="#/services">Mobile Application</a><a href="#/services">Network &amp; Cloud</a><a href="#/services">Wireless / SSID</a><a href="#/services">Red Teaming</a>
+      </div>
+      <div>
+        <p class="eyebrow">Trust</p>
+        <a href="#/verify">Report Verifier</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p class="muted">© <span id="year"></span> Zoltraak Security. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <canvas id="globalBg" aria-hidden="true"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.46.2/dist/umd/supabase.min.js"></script>
+
+  <script src="app.js?v=2026112101"></script>
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zoltraak Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111113;
+      --surface2: #18181c;
+      --border: rgba(255,255,255,0.08);
+      --gold: #c8a84b;
+      --gold-dim: rgba(200,168,75,0.12);
+      --red: #8b1a1a;
+      --text: #e8e6e0;
+      --muted: #888;
+      --green: #3d9e6a;
+      --orange: #c47c2b;
+      --danger: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+    /* LOGIN */
+    #loginScreen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .login-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 40px 36px; width: 100%; max-width: 380px;
+      text-align: center;
+    }
+    .login-box .brand { font-family: "Rajdhani", sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--gold); letter-spacing: .08em; margin-bottom: 8px; }
+    .login-box p { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
+    .login-box input {
+      width: 100%; padding: 10px 14px; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 6px; color: var(--text);
+      font-size: 0.95rem; margin-bottom: 14px; outline: none;
+    }
+    .login-box input:focus { border-color: var(--gold); }
+    .login-err { color: #e05; font-size: 0.83rem; margin-bottom: 10px; min-height: 20px; }
+
+    /* LAYOUT */
+    #adminShell { display: none; min-height: 100vh; }
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 28px; display: flex; align-items: center; gap: 20px; height: 56px;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar .brand { font-family: "Rajdhani", sans-serif; font-weight: 700; color: var(--gold); letter-spacing: .08em; font-size: 1.1rem; }
+    .topbar .badge { font-size: 0.72rem; background: var(--red); color: #fff; padding: 2px 7px; border-radius: 4px; font-family: "Share Tech Mono", monospace; letter-spacing: .05em; }
+    .topbar .spacer { flex: 1; }
+    .topbar .logout-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.83rem; }
+    .topbar .logout-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 28px; }
+    .tab { padding: 12px 20px; cursor: pointer; font-size: 0.88rem; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; letter-spacing: .03em; }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab:hover { color: var(--text); }
+
+    .panel { display: none; padding: 32px 28px; max-width: 1100px; margin: 0 auto; }
+    .panel.active { display: block; }
+
+    /* TOOLBAR */
+    .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .toolbar h2 { font-family: "Rajdhani", sans-serif; font-size: 1.25rem; font-weight: 700; letter-spacing: .05em; flex: 1; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; letter-spacing: .04em; }
+    .btn-gold { background: var(--gold); color: #000; }
+    .btn-gold:hover { background: #d9b85a; }
+    .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #a93226; }
+    .btn-sm { padding: 5px 12px; font-size: 0.78rem; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: var(--surface2); color: var(--muted); font-size: 0.75rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 0.88rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .pill { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; font-family: "Share Tech Mono", monospace; }
+    .pill-valid { background: rgba(61,158,106,0.15); color: var(--green); }
+    .pill-expired { background: rgba(196,124,43,0.15); color: var(--orange); }
+    .pill-revoked { background: rgba(192,57,43,0.15); color: var(--danger); }
+    .row-actions { display: flex; gap: 8px; }
+    .empty-row td { text-align: center; color: var(--muted); padding: 32px; }
+
+    /* MODAL */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 100; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 32px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto;
+    }
+    .modal.wide { max-width: 860px; }
+    .modal.split { max-width: 1200px; padding: 0; display: flex; flex-direction: column; }
+    .split-header { padding: 20px 28px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .split-header h3 { margin: 0; }
+    .split-body { display: grid; grid-template-columns: 1fr 1fr; flex: 1; overflow: hidden; min-height: 0; }
+    .split-form { padding: 24px 28px; overflow-y: auto; border-right: 1px solid var(--border); }
+    .split-preview { padding: 28px 32px; overflow-y: auto; background: #0b0b0d; }
+    .split-preview .preview-label { font-size: 0.72rem; font-weight: 600; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; margin-bottom: 20px; }
+    .split-preview .prev-eyebrow { font-family: "Share Tech Mono", monospace; font-size: 0.72rem; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+    .split-preview .prev-title { font-family: "Rajdhani", sans-serif; font-size: 1.7rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; color: #e8e6e0; }
+    .split-preview .prev-meta { font-size: 0.78rem; color: var(--muted); margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .split-preview .prev-excerpt { color: #aaa; font-size: 0.95rem; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); font-style: italic; }
+    .split-preview .prev-body p { color: #999; margin-top: 14px; font-size: 0.95rem; line-height: 1.7; }
+    .split-preview .prev-body h2 { font-family: "Rajdhani", sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: .05em; margin-top: 22px; color: #e8e6e0; text-transform: uppercase; }
+    .split-preview .prev-body ul { color: #999; padding-left: 18px; margin-top: 10px; }
+    .split-preview .prev-body li { margin: 5px 0; font-size: 0.95rem; }
+    .split-preview .prev-body pre { background: #0e0e0e; border: 1px solid rgba(200,168,75,0.18); border-left: 3px solid var(--gold); border-radius: 6px; padding: 14px 18px; margin-top: 16px; overflow-x: auto; }
+    .split-preview .prev-body pre code { font-family: "Share Tech Mono", monospace; font-size: 0.84rem; color: #c8e6b0; white-space: pre; line-height: 1.7; }
+    .split-preview .prev-body .term-wrap { margin-top: 16px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+    .split-preview .prev-body .term-bar { background: #2d2d2d; padding: 8px 12px; display: flex; align-items: center; gap: 5px; }
+    .split-preview .prev-body .term-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .split-preview .prev-body .term-label { margin-left: 7px; font-family: "Share Tech Mono", monospace; font-size: 0.72rem; color: #555; }
+    .split-preview .prev-body .term-wrap pre { margin: 0; border: none; border-radius: 0; border-left: none; background: #0e0e0e; }
+    .split-preview .prev-body .term-wrap pre code { color: #e8e8e8; }
+    .split-preview .prev-body figure { margin-top: 18px; text-align: center; }
+    .split-preview .prev-body figure img { max-width: 100%; border-radius: 7px; border: 1px solid var(--border); }
+    .split-preview .prev-body figure figcaption { font-size: 0.78rem; color: var(--muted); margin-top: 6px; font-style: italic; }
+    .split-footer { padding: 16px 28px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+    .modal h3 { font-family: "Rajdhani", sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: .05em; margin-bottom: 22px; color: var(--gold); }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text); font-size: 0.9rem; outline: none; font-family: inherit;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field select option { background: var(--surface2); }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; background: var(--surface);
+      border: 1px solid var(--gold); color: var(--gold); padding: 12px 20px;
+      border-radius: 8px; font-size: 0.85rem; z-index: 200; opacity: 0;
+      transition: opacity 0.3s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    /* Confirm dialog */
+    #confirmBg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 150; align-items: center; justify-content: center; }
+    #confirmBg.open { display: flex; }
+    .confirm-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; max-width: 360px; width: 100%; text-align: center; }
+    .confirm-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+    .confirm-box .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+    @media (max-width: 700px) {
+      .split-body { grid-template-columns: 1fr; }
+      .split-preview { display: none; }
+      .panel { padding: 20px 16px; }
+      .topbar { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="brand">ZOLTRAAK SECURITY</div>
+    <p>Administration Panel</p>
+    <input type="email" id="emailInput" placeholder="Admin email" autocomplete="email">
+    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password">
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn btn-gold" style="width:100%" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- ADMIN SHELL -->
+<div id="adminShell">
+  <div class="topbar">
+    <span class="brand">ZOLTRAAK</span>
+    <span class="badge">ADMIN</span>
+    <div class="spacer"></div>
+    <span id="adminEmail" style="font-size:0.82rem;color:var(--muted);margin-right:8px"></span>
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('blogs')">Blog Posts</div>
+    <div class="tab" onclick="switchTab('reports')">Report Verifier</div>
+  </div>
+
+  <div class="panel active" id="panel-blogs">
+    <div class="toolbar">
+      <h2>BLOG POSTS</h2>
+      <button class="btn btn-gold" onclick="openPostModal()">+ New Post</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Title</th><th>Tag</th><th>Date</th><th>Read</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="postsTable"><tr class="empty-row"><td colspan="5">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-reports">
+    <div class="toolbar">
+      <h2>REPORT VERIFIER</h2>
+      <button class="btn btn-gold" onclick="openReportModal()">+ New Entry</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Report ID</th><th>Client</th><th>Assessment</th>
+          <th>Issued</th><th>Valid Until</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="reportsTable"><tr class="empty-row"><td colspan="7">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-bg" id="postModal">
+  <div class="modal split">
+    <div class="split-header">
+      <h3 id="postModalTitle">NEW POST</h3>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="insertBlock('code')">+ Code</button>
+      <button class="btn btn-ghost btn-sm" onclick="insertBlock('terminal')">+ Command</button>
+      <button class="btn btn-ghost btn-sm" onclick="openImgPicker()">+ Image</button>
+      <button class="btn btn-ghost btn-sm" onclick="closePostModal()">✕</button>
+    </div>
+    <div class="split-body">
+      <div class="split-form">
+        <div class="field"><label>Title</label><input id="pTitle" type="text" oninput="renderPreview()"></div>
+        <div class="field-row">
+          <div class="field">
+            <label>Tag</label>
+            <select id="pTag" onchange="renderPreview()">
+              <option>Guide</option><option>Research</option><option>News</option>
+              <option>Case Study</option><option>Opinion</option>
+            </select>
+          </div>
+          <div class="field"><label>Read time</label><input id="pRead" type="text" readonly></div>
+        </div>
+        <div class="field"><label>Excerpt</label><textarea id="pExcerpt" rows="3" oninput="renderPreview()"></textarea></div>
+        <div class="field">
+          <label>Body</label>
+          <textarea id="pBody" rows="12" oninput="renderPreview()" style="font-family:'Share Tech Mono',monospace;font-size:0.85rem"></textarea>
+        </div>
+      </div>
+      <div class="split-preview">
+        <div class="preview-label">PREVIEW</div>
+        <div id="postPreview"></div>
+      </div>
+    </div>
+    <div class="split-footer">
+      <button class="btn btn-ghost" onclick="closePostModal()">Cancel</button>
+      <button class="btn btn-gold" id="savePostBtn" onclick="savePost()">Save Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div class="modal-bg" id="reportModal">
+  <div class="modal">
+    <h3 id="reportModalTitle">NEW REPORT ENTRY</h3>
+    <div class="field-row">
+      <div class="field"><label>Report ID</label><input id="rId" type="text" placeholder="ZS-2026-0001"></div>
+      <div class="field" style="display:flex;align-items:flex-end">
+        <button class="btn btn-ghost btn-sm" onclick="genReportId()">Auto-generate</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Verification Code</label><input id="rCode" type="text" placeholder="XXXX-XXXX"></div>
+      <div class="field" style="display:flex;align-items:flex-end">
+        <button class="btn btn-ghost btn-sm" onclick="genCode()">Generate</button>
+      </div>
+    </div>
+    <div class="field"><label>Client Name</label><input id="rClient" type="text"></div>
+    <div class="field">
+      <label>Assessment Type</label>
+      <select id="rType">
+        <option>Web Application Penetration Test</option>
+        <option>Mobile Application Penetration Test</option>
+        <option>API Security Test</option>
+        <option>Network Penetration Test</option>
+        <option>Cloud Security Assessment</option>
+        <option>Wireless / SSID Penetration Test</option>
+        <option>AI / ML Penetration Test</option>
+        <option>Thick Client Penetration Test</option>
+        <option>Red Team Exercise</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Issued Date</label><input id="rIssued" type="date" onchange="autoValidUntil()"></div>
+      <div class="field"><label>Valid Until</label><input id="rValid" type="date"></div>
+    </div>
+    <div class="field">
+      <label>Status</label>
+      <select id="rStatus">
+        <option value="valid">Valid</option>
+        <option value="expired">Expired</option>
+        <option value="revoked">Revoked</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeReportModal()">Cancel</button>
+      <button class="btn btn-gold" id="saveReportBtn" onclick="saveReport()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE PICKER MODAL -->
+<div class="modal-bg" id="imgModal">
+  <div class="modal">
+    <h3>INSERT IMAGE</h3>
+    <div class="field"><label>Upload File</label><input type="file" id="imgFile" accept="image/*" onchange="previewImg(this)"></div>
+    <div class="field"><label>Or Image URL</label><input type="text" id="imgUrl" placeholder="https://…" oninput="previewImgUrl(this.value)"></div>
+    <div class="field"><label>Alt Text</label><input type="text" id="imgAlt" placeholder="Description of image"></div>
+    <div id="imgPreviewWrap" style="display:none;margin-bottom:12px">
+      <img id="imgPreview" style="max-width:100%;border-radius:6px;border:1px solid var(--border)" alt="">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeImgModal()">Cancel</button>
+      <button class="btn btn-gold" onclick="insertImg()">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- CONFIRM -->
+<div id="confirmBg">
+  <div class="confirm-box">
+    <p id="confirmMsg"></p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.46.2/dist/umd/supabase.min.js"></script>
+<script>
+  const { createClient } = supabase;
+  const sb = createClient(
+    'https://vvzrdtfruewamzdpixyt.supabase.co',
+    'sb_publishable_ICn0-Ju8NQXPM75JbojdkA_p4fOignI'
+  );
+
+  /* ── AUTH ── */
+  sb.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      document.getElementById('adminEmail').textContent = session.user.email;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminShell').style.display = 'block';
+      renderPosts();
+      renderReports();
+    } else {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('adminShell').style.display = 'none';
+    }
+  });
+
+  async function doLogin() {
+    const errEl = document.getElementById('loginErr');
+    const email = document.getElementById('emailInput').value.trim();
+    const pw    = document.getElementById('pwInput').value;
+    if (!email || !pw) { errEl.textContent = 'Please enter your email and password.'; return; }
+    const btn = document.querySelector('#loginScreen .btn');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    errEl.textContent = '';
+    const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error) {
+      errEl.textContent = error.message || 'Sign in failed.';
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  }
+
+  document.getElementById('emailInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('pwInput').addEventListener('keydown',   e => { if (e.key === 'Enter') doLogin(); });
+
+  async function logout() {
+    await sb.auth.signOut();
+  }
+
+  /* ── TABS ── */
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['blogs','reports'][i] === name));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
+  }
+
+  /* ── TOAST ── */
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  /* ── CONFIRM ── */
+  let confirmCb = null;
+  function confirm(msg, cb) {
+    document.getElementById('confirmMsg').textContent = msg;
+    document.getElementById('confirmBg').classList.add('open');
+    confirmCb = cb;
+    document.getElementById('confirmOk').onclick = function() { closeConfirm(); if (confirmCb) confirmCb(); };
+  }
+  function closeConfirm() { document.getElementById('confirmBg').classList.remove('open'); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closePostModal(); closeReportModal(); closeConfirm(); }
+  });
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ══════════════════════════════
+     BLOG POSTS
+  ══════════════════════════════ */
+  async function renderPosts() {
+    const tbody = document.getElementById('postsTable');
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Loading…</td></tr>';
+    const { data: posts, error } = await sb.from('posts').select('*').order('date', { ascending: false });
+    if (error) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Error loading posts.</td></tr>'; return; }
+    if (!posts || !posts.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No posts yet. Click "+ New Post" to add one.</td></tr>'; return; }
+    tbody.innerHTML = posts.map(p => `
+      <tr>
+        <td style="max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title)}</td>
+        <td><span class="pill pill-valid">${esc(p.tag)}</span></td>
+        <td>${esc(p.date)}</td>
+        <td>${esc(p.read)}</td>
+        <td><div class="row-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editPost('${esc(p.id)}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePost('${esc(p.id)}')">Delete</button>
+        </div></td>
+      </tr>`).join('');
+  }
+
+  function slugify(str) {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  let editingPostId = null;
+  let editingPost   = null;
+
+  async function openPostModal(id) {
+    editingPostId = id || null;
+    editingPost   = null;
+    if (id) {
+      const { data } = await sb.from('posts').select('*').eq('id', id).single();
+      editingPost = data;
+    }
+    document.getElementById('postModalTitle').textContent = editingPost ? 'EDIT POST' : 'NEW POST';
+    document.getElementById('pTitle').value   = editingPost ? editingPost.title   : '';
+    document.getElementById('pTag').value     = editingPost ? editingPost.tag     : 'Guide';
+    document.getElementById('pRead').value    = editingPost ? editingPost.read    : '5 min';
+    document.getElementById('pExcerpt').value = editingPost ? editingPost.excerpt : '';
+    document.getElementById('pBody').value    = editingPost ? bodyToText(editingPost.body) : '';
+    document.getElementById('postModal').classList.add('open');
+    renderPreview();
+  }
+  function closePostModal() { document.getElementById('postModal').classList.remove('open'); }
+  function editPost(id) { openPostModal(id); }
+
+  function bodyToText(body) {
+    return body.map(([type, val]) => {
+      if (type === 'h2') return '## ' + val;
+      if (type === 'ul') return val.map(b => '- ' + b).join('\n');
+      if (type === 'code') return '```\n' + val + '\n```';
+      if (type === 'terminal') return '~~~\n' + val + '\n~~~';
+      if (type === 'image') {
+        let src = val.src;
+        if (src && src.startsWith('data:')) {
+          const cache = getImgCache();
+          let key = Object.keys(cache).find(k => cache[k] === src);
+          if (!key) { key = 'img_' + Date.now(); cache[key] = src; saveImgCache(cache); }
+          src = 'img://' + key;
+        }
+        return `![${val.alt}](${src})`;
+      }
+      return val;
+    }).join('\n\n');
+  }
+
+  function textToBody(text) {
+    const blocks = [];
+    const fenceRe = /(```([\s\S]*?)```|~~~([\s\S]*?)~~~)/g;
+    let last = 0, m;
+    while ((m = fenceRe.exec(text)) !== null) {
+      const before = text.slice(last, m.index).trim();
+      if (before) before.split(/\n\n+/).filter(Boolean).forEach(b => blocks.push(b));
+      if (m[0].startsWith('```')) blocks.push('\x00code\x00' + m[2].trim());
+      else blocks.push('\x00term\x00' + m[3].trim());
+      last = m.index + m[0].length;
+    }
+    const tail = text.slice(last).trim();
+    if (tail) tail.split(/\n\n+/).filter(Boolean).forEach(b => blocks.push(b));
+    return blocks.filter(Boolean).map(block => {
+      if (block.startsWith('\x00code\x00')) return ['code', block.slice(6)];
+      if (block.startsWith('\x00term\x00')) return ['terminal', block.slice(6)];
+      const lines = block.split('\n').filter(Boolean);
+      const imgMatch = lines.length === 1 && lines[0].match(/^!\[([^\]]*)\]\((.+)\)$/);
+      if (imgMatch) return ['image', { alt: imgMatch[1], src: resolveImgSrc(imgMatch[2]) }];
+      if (lines[0].startsWith('## ')) return ['h2', lines[0].slice(3)];
+      if (lines.every(l => l.startsWith('- '))) return ['ul', lines.map(l => l.slice(2))];
+      return ['p', lines.join(' ')];
+    });
+  }
+
+  async function savePost() {
+    const btn = document.getElementById('savePostBtn');
+    const title   = document.getElementById('pTitle').value.trim();
+    const tag     = document.getElementById('pTag').value;
+    const read    = document.getElementById('pRead').value.trim() || '5 min';
+    const excerpt = document.getElementById('pExcerpt').value.trim();
+    const bodyTxt = document.getElementById('pBody').value.trim();
+    if (!title || !excerpt || !bodyTxt) { toast('Please fill in all fields.'); return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const entry = {
+      slug:    slugify(title),
+      tag, read, title, excerpt,
+      date:    editingPost ? editingPost.date : new Date().toISOString().slice(0,10),
+      body:    textToBody(bodyTxt)
+    };
+    let error;
+    if (editingPostId) {
+      ({ error } = await sb.from('posts').update(entry).eq('id', editingPostId));
+    } else {
+      ({ error } = await sb.from('posts').insert([entry]));
+    }
+    btn.disabled = false; btn.textContent = 'Save Post';
+    if (error) { toast('Error: ' + error.message); return; }
+    closePostModal();
+    renderPosts();
+    toast(editingPostId ? 'Post updated.' : 'Post added.');
+  }
+
+  function deletePost(id) {
+    confirm('Delete this post? This cannot be undone.', async function() {
+      const { error } = await sb.from('posts').delete().eq('id', id);
+      if (error) { toast('Error: ' + error.message); return; }
+      renderPosts();
+      toast('Post deleted.');
+    });
+  }
+
+  /* ══════════════════════════════
+     REPORTS
+  ══════════════════════════════ */
+  async function renderReports() {
+    const tbody = document.getElementById('reportsTable');
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="7">Loading…</td></tr>';
+    const { data: reports, error } = await sb.from('reports').select('*').order('created_at', { ascending: false });
+    if (error) { tbody.innerHTML = `<tr class="empty-row"><td colspan="7">Error: ${esc(error.message || error.code || JSON.stringify(error))}</td></tr>`; console.error('reports error', error); return; }
+    if (!reports || !reports.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No entries yet. Click "+ New Entry" to add one.</td></tr>'; return; }
+    tbody.innerHTML = reports.map(r => `
+      <tr>
+        <td><code style="font-family:Share Tech Mono,monospace;font-size:0.82rem">${esc(r.id)}</code></td>
+        <td>${esc(r.client)}</td>
+        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.type)}</td>
+        <td>${esc(r.issued)}</td>
+        <td>${esc(r.valid_until)}</td>
+        <td><span class="pill pill-${r.status}">${r.status}</span></td>
+        <td><div class="row-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editReport('${esc(r.id)}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteReport('${esc(r.id)}')">Delete</button>
+        </div></td>
+      </tr>`).join('');
+  }
+
+  let editingReportId = null;
+
+  function openReportModal(id) {
+    editingReportId = id || null;
+    document.getElementById('reportModalTitle').textContent = id ? 'EDIT ENTRY' : 'NEW REPORT ENTRY';
+    document.getElementById('rId').value     = id || '';
+    document.getElementById('rId').disabled  = !!id;
+    document.getElementById('rCode').value   = '';
+    document.getElementById('rClient').value = '';
+    document.getElementById('rType').value   = 'Web Application Penetration Test';
+    document.getElementById('rIssued').value = '';
+    document.getElementById('rValid').value  = '';
+    document.getElementById('rStatus').value = 'valid';
+    if (id) {
+      sb.from('reports').select('*').eq('id', id).single().then(({ data: r }) => {
+        if (!r) return;
+        document.getElementById('rCode').value   = r.code;
+        document.getElementById('rClient').value = r.client;
+        document.getElementById('rType').value   = r.type;
+        document.getElementById('rIssued').value = r.issued;
+        document.getElementById('rValid').value  = r.valid_until;
+        document.getElementById('rStatus').value = r.status;
+      });
+    }
+    document.getElementById('reportModal').classList.add('open');
+  }
+  function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); }
+  function editReport(id) { openReportModal(id); }
+
+  async function saveReport() {
+    const btn         = document.getElementById('saveReportBtn');
+    const id          = document.getElementById('rId').value.trim().toUpperCase();
+    const code        = document.getElementById('rCode').value.trim().toUpperCase();
+    const client      = document.getElementById('rClient').value.trim();
+    const type        = document.getElementById('rType').value;
+    const issued      = document.getElementById('rIssued').value;
+    const valid_until = document.getElementById('rValid').value;
+    const status      = document.getElementById('rStatus').value;
+    if (!id || !code || !client || !issued || !valid_until) { toast('Please fill in all required fields.'); return; }
+    btn.disabled = true; btn.textContent = 'Saving…';
+    let error;
+    if (editingReportId) {
+      ({ error } = await sb.from('reports').update({ code, client, type, issued, valid_until, status }).eq('id', editingReportId));
+    } else {
+      ({ error } = await sb.from('reports').insert([{ id, code, client, type, issued, valid_until, status }]));
+    }
+    btn.disabled = false; btn.textContent = 'Save Entry';
+    if (error) { toast('Error: ' + (error.message || error.code)); return; }
+    closeReportModal();
+    renderReports();
+    toast(editingReportId ? 'Entry updated.' : 'Entry added.');
+  }
+
+  function deleteReport(id) {
+    confirm(`Delete report ${id}? This cannot be undone.`, async function() {
+      const { error } = await sb.from('reports').delete().eq('id', id);
+      if (error) { toast('Error: ' + error.message); return; }
+      renderReports();
+      toast('Entry deleted.');
+    });
+  }
+
+  async function genReportId() {
+    const year = new Date().getFullYear();
+    const { data: rows } = await sb.from('reports').select('id').like('id', `ZS-${year}-%`);
+    const existing = (rows || []).map(r => parseInt(r.id.split('-')[2]) || 0);
+    const next = existing.length ? Math.max(...existing) + 1 : 1;
+    document.getElementById('rId').value = 'ZS-' + year + '-' + String(next).padStart(4, '0');
+  }
+
+  function autoValidUntil() {
+    const issued = document.getElementById('rIssued').value;
+    const base = issued ? new Date(issued) : new Date();
+    base.setFullYear(base.getFullYear() + 1);
+    document.getElementById('rValid').value = base.toISOString().slice(0, 10);
+  }
+
+  function genCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const part = () => Array.from({length: 4}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    document.getElementById('rCode').value = part() + '-' + part();
+  }
+
+  /* ── IMAGE PICKER ── */
+  let _imgBase64 = null;
+
+  function openImgPicker() {
+    _imgBase64 = null;
+    document.getElementById('imgFile').value = '';
+    document.getElementById('imgUrl').value = '';
+    document.getElementById('imgAlt').value = '';
+    document.getElementById('imgPreviewWrap').style.display = 'none';
+    document.getElementById('imgModal').classList.add('open');
+  }
+  function closeImgModal() { document.getElementById('imgModal').classList.remove('open'); }
+
+  function previewImg(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      _imgBase64 = e.target.result;
+      document.getElementById('imgUrl').value = '';
+      showImgPreview(_imgBase64);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function previewImgUrl(url) {
+    _imgBase64 = null;
+    if (url) showImgPreview(url); else document.getElementById('imgPreviewWrap').style.display = 'none';
+  }
+
+  function showImgPreview(src) {
+    const img = document.getElementById('imgPreview');
+    img.src = src;
+    document.getElementById('imgPreviewWrap').style.display = 'block';
+  }
+
+  function getImgCache() {
+    try { return JSON.parse(localStorage.getItem('zs-img-cache') || '{}'); } catch(e) { return {}; }
+  }
+  function saveImgCache(obj) { try { localStorage.setItem('zs-img-cache', JSON.stringify(obj)); } catch(e) {} }
+
+  function insertImg() {
+    const alt = document.getElementById('imgAlt').value.trim() || 'image';
+    let src = _imgBase64 || document.getElementById('imgUrl').value.trim();
+    if (!src) { toast('Please upload a file or enter a URL.'); return; }
+    if (_imgBase64) {
+      const cache = getImgCache();
+      const key = 'img_' + Date.now();
+      cache[key] = _imgBase64;
+      saveImgCache(cache);
+      src = 'img://' + key;
+    }
+    insertBodySnippet(`![${alt}](${src})\n`);
+    closeImgModal();
+  }
+
+  function resolveImgSrc(src) {
+    if (!src.startsWith('img://')) return src;
+    const cache = getImgCache();
+    return cache[src.slice(6)] || src;
+  }
+
+  function calcReadTime(text) {
+    const clean = text.replace(/```[\s\S]*?```/g, '').replace(/~~~[\s\S]*?~~~/g, '').replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/[#\-~`]/g, '');
+    const words = clean.trim().split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.ceil(words / 200)) + ' min';
+  }
+
+  function renderPreview() {
+    const title   = document.getElementById('pTitle').value || 'Post Title';
+    const tag     = document.getElementById('pTag').value;
+    const excerpt = document.getElementById('pExcerpt').value;
+    const bodyTxt = document.getElementById('pBody').value;
+    const read    = calcReadTime((document.getElementById('pExcerpt').value + ' ' + bodyTxt).trim());
+    document.getElementById('pRead').value = read;
+    const body = textToBody(bodyTxt);
+    const bodyHtml = body.map(([t, c]) => {
+      if (t === 'h2')       return `<h2>${esc(c)}</h2>`;
+      if (t === 'ul')       return `<ul>${c.map(li => `<li>${esc(li)}</li>`).join('')}</ul>`;
+      if (t === 'code')     return `<pre><code>${esc(c)}</code></pre>`;
+      if (t === 'terminal') return `<div class="term-wrap"><div class="term-bar"><span class="term-dot" style="background:#ff5f56"></span><span class="term-dot" style="background:#ffbd2e"></span><span class="term-dot" style="background:#27c93f"></span><span class="term-label">terminal</span></div><pre><code>${esc(c)}</code></pre></div>`;
+      if (t === 'image')    return `<figure><img src="${esc(c.src)}" alt="${esc(c.alt)}">${c.alt ? `<figcaption>${esc(c.alt)}</figcaption>` : ''}</figure>`;
+      return `<p>${esc(c)}</p>`;
+    }).join('');
+    document.getElementById('postPreview').innerHTML = `
+      <div class="prev-eyebrow">${esc(tag)}</div>
+      <div class="prev-title">${esc(title)}</div>
+      <div class="prev-meta"><span>${esc(read)} read</span></div>
+      ${excerpt ? `<div class="prev-excerpt">${esc(excerpt)}</div>` : ''}
+      <div class="prev-body">${bodyHtml}</div>`;
+  }
+
+  function insertBlock(type) {
+    const fence = type === 'code' ? '```' : '~~~';
+    const ta = document.getElementById('pBody');
+    const start = ta.selectionStart;
+    const before = ta.value.slice(0, start);
+    const prefix = before.length && !before.endsWith('\n\n') ? '\n\n' : '';
+    const snippet = fence + '\n\n' + fence + '\n';
+    ta.value = before + prefix + snippet + ta.value.slice(ta.selectionEnd);
+    ta.selectionStart = ta.selectionEnd = start + prefix.length + fence.length + 1;
+    ta.focus();
+    renderPreview();
+  }
+
+  function insertBodySnippet(snippet) {
+    const ta = document.getElementById('pBody');
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const before = ta.value.slice(0, start);
+    const prefix = before.length && !before.endsWith('\n\n') ? '\n\n' : '';
+    ta.value = before + prefix + snippet + ta.value.slice(end);
+    ta.focus();
+    ta.selectionStart = ta.selectionEnd = start + prefix.length + snippet.length;
+  }
+</script>
+</body>
+</html>
