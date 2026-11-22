@@ -174,7 +174,10 @@
     <div class="brand">ZOLTRAAK SECURITY</div>
     <p>Administration Panel</p>
     <input type="email" id="emailInput" placeholder="Admin email" autocomplete="email">
-    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password">
+    <div style="position:relative">
+      <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password" style="width:100%;padding-right:40px;box-sizing:border-box">
+      <button type="button" onclick="const i=document.getElementById('pwInput');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈'" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:0;line-height:1">👁</button>
+    </div>
     <div class="login-err" id="loginErr"></div>
     <button class="btn btn-gold" style="width:100%" onclick="doLogin()">Sign In</button>
   </div>
