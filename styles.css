@@ -111,13 +111,14 @@ code {
 .display    { font-size: clamp(2.8rem, 7vw, 5.2rem); }
 .display-sm { font-size: clamp(2.2rem, 5vw, 3.6rem); }
 .title      { font-size: clamp(1.8rem, 3.5vw, 2.6rem); margin-bottom: 16px; }
-.title-sm   { font-size: 1.7rem; margin-bottom: 12px; }
+.title-sm   { font-size: clamp(1.35rem, 4.5vw, 1.7rem); margin-bottom: 12px; }
 
 .lead {
   font-size: clamp(1rem, 1.6vw, 1.14rem);
   color: var(--muted);
   max-width: 640px;
-  margin-top: 22px;
+  margin-top: 14px;
+  text-wrap: balance;
 }
 .hero-inner .lead {
   text-align: center;
@@ -254,6 +255,10 @@ code {
 :root[data-theme="dark"] .icon-moon,
 :root[data-theme="light"] .icon-sun { display: none; }
 
+:root[data-theme="light"] .hero,
+:root[data-theme="light"] .page-hero { background: none; }
+
+
 .menu-toggle {
   display: none;
   width: 38px; height: 38px;
@@ -334,15 +339,23 @@ code {
 
 .hero-inner {
   position: relative;
-  padding-top: 100px;
-  padding-bottom: 104px;
+  padding-top: 80px;
+  padding-bottom: 80px;
   z-index: 1;
   text-align: center;
 }
-@media (min-width: 720px) { .hero-inner { padding-top: 148px; padding-bottom: 140px; } }
-.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; justify-content: center; }
+@media (min-width: 720px) { .hero-inner { padding-top: 120px; padding-bottom: 110px; } }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; justify-content: center; }
+.tagline-cursor {
+  display: inline-block;
+  color: var(--gold);
+  animation: blink 0.7s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.tagline-cursor.done { animation: none; opacity: 0; }
+
 .hero-tagline {
-  margin: 24px 0 0;
+  margin: 16px 0 0;
   font-family: "Share Tech Mono", monospace;
   font-size: 0.95rem;
   color: var(--gold);
@@ -359,18 +372,6 @@ code {
   padding: 72px 0 60px;
   position: relative;
   overflow: hidden;
-}
-.page-hero::before {
-  content: "";
-  position: absolute; inset: 0;
-  background-image:
-    radial-gradient(ellipse at 10% 90%, transparent 14%, rgba(200,168,75,0.05) 15%, transparent 16%),
-    radial-gradient(ellipse at 10% 90%, transparent 27%, rgba(200,168,75,0.04) 28%, transparent 29%),
-    radial-gradient(ellipse at 10% 90%, transparent 42%, rgba(200,168,75,0.03) 43%, transparent 44%),
-    radial-gradient(ellipse at 88% 8%,  transparent 18%, rgba(139,26,26,0.04)  19%, transparent 20%),
-    radial-gradient(ellipse at 88% 8%,  transparent 36%, rgba(139,26,26,0.03)  37%, transparent 38%),
-    radial-gradient(ellipse at 88% 8%,  transparent 56%, rgba(139,26,26,0.02)  57%, transparent 58%);
-  pointer-events: none;
 }
 .page-hero .container { position: relative; z-index: 1; }
 .page-hero .display-sm { font-size: clamp(1.5rem, 3.5vw, 2.2rem); }
@@ -423,7 +424,7 @@ code {
 
 .card h3, .value-card h3 {
   font-family: "Rajdhani", sans-serif;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
   margin-bottom: 10px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -586,7 +587,7 @@ code {
 .steps li:hover { background: var(--surface); }
 .step-no {
   font-family: "Share Tech Mono", monospace;
-  font-size: 1.6rem;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
   color: var(--red);
   line-height: 1;
   opacity: 0.85;
@@ -632,7 +633,7 @@ code {
 }
 .service-item h3 {
   font-family: "Rajdhani", sans-serif;
-  font-size: 1.8rem;
+  font-size: clamp(1.1rem, 4.5vw, 1.8rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -824,7 +825,7 @@ img.cert-emblem { object-fit: contain; aspect-ratio: 1; }
 }
 .article h2 {
   font-family: "Rajdhani", sans-serif;
-  font-size: 1.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  font-size: clamp(1.1rem, 4vw, 1.6rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
   margin: 40px 0 12px;
 }
 .article p { color: var(--muted); margin-top: 16px; font-size: 1.04rem; }
@@ -979,7 +980,7 @@ textarea { resize: vertical; }
 .status.warn { color: var(--warn); }
 .result h3 {
   font-family: "Rajdhani", sans-serif;
-  font-size: 1.8rem; font-weight: 700;
+  font-size: clamp(1.2rem, 4.5vw, 1.8rem); font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.04em;
   margin: 18px 0 6px;
 }

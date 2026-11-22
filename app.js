@@ -179,6 +179,7 @@
     const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
     try { localStorage.setItem('zs-theme', next); } catch (e) {}
+    if (typeof initHexBanners === 'function') initHexBanners();
   });
 
   /* Mobile menu */
@@ -424,6 +425,22 @@
       submitBtn.disabled = false;
     });
   });
+  /* Tagline typewriter */
+  (function () {
+    const text = '"Not Just Certified. Battle-Tested."';
+    const el = document.getElementById('taglineTyped');
+    const cursor = document.querySelector('.tagline-cursor');
+    if (!el) return;
+    let i = 0;
+    const timer = setInterval(function () {
+      el.textContent = text.slice(0, ++i);
+      if (i === text.length) {
+        clearInterval(timer);
+        setTimeout(function () { cursor.classList.add('done'); }, 600);
+      }
+    }, 45);
+  })();
+
   /* Hex pattern — hero + page-hero banners */
   (function () {
     const R = 22;
