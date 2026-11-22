@@ -251,9 +251,8 @@ code {
   touch-action: manipulation;
   transition: background 0.2s, transform 0.3s;
 }
-@media (hover: hover) {
-  .theme-toggle:hover { background: var(--surface-2); transform: rotate(15deg); }
-}
+.theme-toggle:hover { background: var(--surface-2); }
+.theme-toggle:active { transform: rotate(15deg); }
 .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 :root[data-theme="dark"] .icon-moon,
 :root[data-theme="light"] .icon-sun { display: none; }
